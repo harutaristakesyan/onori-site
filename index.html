@@ -279,10 +279,12 @@ float n(vec2 v){vec2 i=floor(v),f=fract(v);f=f*f*(3.-2.*f);return mix(mix(h(i),h
 float fbm(vec2 v){float a=.5,s=0.;for(int i=0;i<5;i++){s+=a*n(v);v=v*2.03+vec2(1.7,9.2);a*=.5;}return s;}
 void main(){vec2 uv=gl_FragCoord.xy/r;vec2 q=vec2(uv.x*r.x/r.y,uv.y);
 float m=fbm(q*1.5+vec2(t*.03,t*.011)+.8*fbm(q*2.2-vec2(t*.018,0.)));
+float w=fbm(q*vec2(.45,2.)+vec2(t*.02,0.)+.5*fbm(q*vec2(.8,2.7)-vec2(t*.011,t*.004)));
 vec2 bc=(b.xy+b.zw)*.5,bh=(b.zw-b.xy)*.5,e=abs(uv-bc)-bh;float o=length(max(e,0.))+min(max(e.x,e.y),0.);
-float mask=smoothstep(-.03,.22,o),k=smoothstep(0.,1.,c*1.9-length((uv-bc)/max(bh,vec2(.001)))*.5);
-float dens=smoothstep(.3,.78,m)*mix(1.,mask,k)*mix(.96,.72,c);
-dens*=smoothstep(0.,.2,uv.y)*smoothstep(1.,.78,uv.y);
+float mask=smoothstep(0.,.3,o),k=smoothstep(0.,1.,c*1.9-length((uv-bc)/max(bh,vec2(.001)))*.5);
+float side=smoothstep(b.z-.02,b.z+.34,uv.x),low=smoothstep(0.,.07,uv.y)*(1.-smoothstep(.04,b.y+.03,uv.y));
+float rest=smoothstep(.36,.9,w)*.3*side*mask+low*(.1+.22*w);
+float dens=mix(smoothstep(.3,.78,m)*.96*smoothstep(0.,.1,uv.y),rest,k)*smoothstep(1.,.76,uv.y);
 vec2 pd=(uv-p.xy)*vec2(r.x/r.y,1.);dens*=1.-p.z*exp(-dot(pd,pd)*11.);
 dens=clamp(dens+(h(gl_FragCoord.xy+t)-.5)*.012,0.,1.);gl_FragColor=vec4(fog*dens,dens);}`));
   gl.linkProgram(pr); if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) { cv.remove(); return; }
