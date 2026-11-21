@@ -310,30 +310,32 @@ if (reduced) {
   once(lake2, () => { lake2.play().catch(() => still(lake2)); }, 0.35);
 }
 
-/* 4. privacy proof: the browser counts what this page really loaded */
-const own = location.origin, seen = new Set(), rows = [];
-let third = 0, files = 0, bytes = 0;
+/* 4. privacy proof: the browser counts what this page really loaded. A file is
+   one row however many requests it took (a film arrives in several ranges), and a
+   file the browser already had is shown as cached, since nothing was downloaded. */
+const own = location.origin, files = new Map(), counted = new Set();
 const kind = e => { const n = e.name.split('?')[0]; return /\.woff2?$/.test(n) ? 'font' : /\.(mp4|webm)$/.test(n) ? 'film' : /\.(webp|jpe?g|png|svg)$/.test(n) ? 'image' : /\.css$/.test(n) ? 'style' : /\.js$/.test(n) ? 'script' : (e.initiatorType || 'file'); };
 const size = b => b <= 0 ? '0 kB' : b >= 1e6 ? (b / 1e6).toFixed(1) + ' MB' : Math.max(1, Math.round(b / 1e3)) + ' kB';
 function addEntry(e) {
-  if (seen.has(e.name)) return; seen.add(e.name);
+  const key = e.name + '|' + e.startTime; if (counted.has(key)) return; counted.add(key);
   let u; try { u = new URL(e.name); } catch (_) { return; }
   if (!/^https?:$/.test(u.protocol)) return;
-  const mine = u.origin === own;
-  const b = e.encodedBodySize || e.transferSize || 0;
-  if (mine) { files++; bytes += b; } else third++;
-  rows.unshift({t: kind(e), n: u.pathname.split('/').pop() || u.hostname, s: b ? size(b) : '', o: mine ? 'this site' : u.hostname});
+  let f = files.get(e.name);
+  if (!f) { f = {t: kind(e), n: u.pathname.split('/').pop() || u.hostname, mine: u.origin === own, host: u.hostname, b: 0}; files.set(e.name, f); }
+  f.b += e.encodedBodySize || 0; if (e.transferSize > 0 || e.encodedBodySize > 0) f.net = true;
   drawNet();
 }
 function drawNet() {
-  $('nThird').textContent = third;
-  $('nFiles').textContent = files + (files === 1 ? ' file' : ' files');
-  $('nBytes').textContent = size(bytes) + ' in total';
+  const all = [...files.values()], mine = all.filter(f => f.mine);
+  const bytes = mine.reduce((s, f) => s + f.b, 0), cached = mine.filter(f => !f.net).length;
+  $('nThird').textContent = all.length - mine.length;
+  $('nFiles').textContent = mine.length + (mine.length === 1 ? ' file' : ' files');
+  $('nBytes').textContent = mine.length && cached === mine.length ? 'all from your cache' : size(bytes) + ' downloaded' + (cached ? ', ' + cached + ' cached' : '');
   let ck = 0; try { ck = document.cookie ? document.cookie.split(';').length : 0; } catch (_) {}
   $('nCookies').textContent = ck + (ck === 1 ? ' cookie' : ' cookies');
   const ul = $('nRows'); ul.textContent = '';
-  rows.slice(0, 5).forEach(r => { const li = document.createElement('li');
-    [['t', r.t], ['n', r.n], ['s', r.s], ['o', r.o]].forEach(([c, v]) => { const s = document.createElement('span'); s.className = c; s.textContent = v; li.appendChild(s); });
+  all.slice(-5).reverse().forEach(f => { const li = document.createElement('li');
+    [['t', f.t], ['n', f.n], ['s', f.b ? size(f.b) : (f.mine && !f.net ? 'cached' : '')], ['o', f.mine ? 'this site' : f.host]].forEach(([c, v]) => { const s = document.createElement('span'); s.className = c; s.textContent = v; li.appendChild(s); });
     ul.appendChild(li); });
 }
 try {
