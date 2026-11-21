@@ -297,12 +297,13 @@ dens=clamp(dens+(h(gl_FragCoord.xy+t)-.5)*.012,0.,1.);gl_FragColor=vec4(fog*dens
   const tint = () => { const f = dark.matches ? [.56, .57, .62] : [.8, .81, .85]; gl.uniform3f(uF, f[0], f[1], f[2]); };
   tint(); dark.addEventListener('change', tint);
   const size = () => { const w = Math.max(2, Math.round(stage.clientWidth * .5)), h = Math.max(2, Math.round(stage.clientHeight * .5)); if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; gl.viewport(0, 0, w, h); gl.uniform2f(uR, w, h); } };
-  let clear = 0, goal = 1, px = .5, py = .5, pz = 0, pgoal = 0, seen = false, raf = 0, last = 0;
+  let clear = 0, goal = 0, tau = 1500, t0 = 0, px = .5, py = .5, pz = 0, pgoal = 0, seen = false, raf = 0, last = 0;
   fogPuff = () => { clear = Math.min(clear, .45); };
   const frame = now => {
     raf = 0; if (!seen || document.hidden) return;
     raf = requestAnimationFrame(frame); const dt = now - last; if (dt < 30) return; last = now; const step = Math.min(dt, 120);
-    size(); clear += (goal - clear) * (1 - Math.exp(-step / 700)); pz += (pgoal - pz) * (1 - Math.exp(-step / 200));
+    if (!t0) t0 = now; if (now - t0 > 450) goal = 1; if (clear > .985) tau = 600;
+    size(); clear += (goal - clear) * (1 - Math.exp(-step / tau)); pz += (pgoal - pz) * (1 - Math.exp(-step / 200));
     const sb = stage.getBoundingClientRect(); let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
     for (const el of inked) { const q = el.getBoundingClientRect(); x0 = Math.min(x0, q.left); y0 = Math.min(y0, q.top); x1 = Math.max(x1, q.right); y1 = Math.max(y1, q.bottom); }
     gl.uniform4f(uB, (x0 - sb.left) / sb.width, 1 - (y1 - sb.top) / sb.height, (x1 - sb.left) / sb.width, 1 - (y0 - sb.top) / sb.height);

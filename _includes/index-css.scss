@@ -204,7 +204,7 @@ h1{font-size:clamp(56px,11.4vw,176px);font-weight:500;letter-spacing:-.052em;lin
 .numstage canvas{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}
 .numstage .wrap{position:relative;z-index:1;display:grid;gap:clamp(12px,1.6vw,22px)}
 .n-eyebrow{display:flex;justify-content:space-between;gap:16px}
-.n-num{--k:1;font-size:calc(clamp(120px,24vw,340px)*var(--k));font-weight:500;letter-spacing:-.06em;line-height:.86;display:flex;align-items:baseline;gap:.05em;margin-left:-.04em;transition:filter 1.4s cubic-bezier(.2,.7,.2,1),font-size .4s cubic-bezier(.2,.7,.2,1)}
+.n-num{--k:1;font-size:calc(clamp(120px,24vw,340px)*var(--k));font-weight:500;letter-spacing:-.06em;line-height:.86;display:flex;align-items:baseline;gap:.05em;margin-left:-.04em;transition:filter 2.4s cubic-bezier(.3,.6,.2,1) .4s,font-size .4s cubic-bezier(.2,.7,.2,1)}
 .n-num.fogged{filter:blur(22px);transition:none}
 .n-num.refocus{animation:refocus .7s cubic-bezier(.2,.7,.2,1)}
 @keyframes refocus{from{filter:blur(12px)}to{filter:blur(0)}}
