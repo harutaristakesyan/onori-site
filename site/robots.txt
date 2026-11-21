@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://onori.money/sitemap.xml
