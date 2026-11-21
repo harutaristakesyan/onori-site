@@ -118,13 +118,13 @@
       <p class="more"><a class="textlink" href="/receipts.html">How receipts and Apple Pay capture work</a></p>
     </div>
     <div class="stage" id="stage" role="tabpanel" aria-labelledby="t0">
-      <figure class="shot on"><div class="phone tilt"><picture><source srcset="/assets/img/overview-dark.webp" media="(prefers-color-scheme: dark)"><img src="/assets/img/overview.webp" width="720" height="1564" alt="Overview in Onori: you can spend $78 a day, with $624.96 left after bills and 8 days until payday, and the envelopes below"></picture></div></figure>
+      <figure class="shot on"><div class="phone tilt"><picture><source srcset="/assets/img/overview-dark.webp" media="(prefers-color-scheme: dark)"><img src="/assets/img/overview.webp" width="720" height="1564" alt="Overview in Onori: you can spend $78 a day, with $624.96 left after bills and 8 days until payday, and the envelopes below"></picture><video class="clip" id="walk" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1" data-light="/assets/film/walk.mp4" data-dark="/assets/film/walk-dark.mp4"></video></div></figure>
       <figure class="shot"><div class="phone tilt"><picture><source srcset="/assets/img/budget-dark.webp" media="(prefers-color-scheme: dark)"><img src="/assets/img/budget.webp" width="720" height="1564" loading="lazy" alt="Budget in Onori: left to spend, the bills set aside, envelopes and savings goals"></picture></div></figure>
       <figure class="shot"><div class="phone tilt"><picture><source srcset="/assets/img/transactions-dark.webp" media="(prefers-color-scheme: dark)"><img src="/assets/img/transactions.webp" width="720" height="1564" loading="lazy" alt="Transactions in Onori, grouped by day"></picture></div></figure>
       <figure class="shot"><div class="macwin tilt"><picture><source srcset="/assets/img/mac-overview-dark.webp" media="(prefers-color-scheme: dark)"><img src="/assets/img/mac-overview.webp" width="1600" height="1118" loading="lazy" alt="Onori on Mac: the number, its calculation, recent transactions and envelopes"></picture></div></figure>
     </div>
   </div>
-  <p class="cap" style="margin-top:18px">Real Onori screens from a development build, captured 20 and 21 November 2026. All amounts are synthetic demonstration data.</p>
+  <p class="cap" style="margin-top:18px">Real Onori screens and a real screen recording from a development build, captured 20 and 21 November 2026. All amounts are synthetic demonstration data.</p>
 </div></section>
 
 <section class="fx" id="currencies"><div class="wrap">
@@ -360,10 +360,28 @@ drawNet();
 
 /* 5. feature tabs */
 const tabs = [...document.querySelectorAll('.tab')], shots = [...document.querySelectorAll('.shot')];
+let syncWalk = () => {};
 function pick(i, focus) {
   tabs.forEach((t, k) => { t.setAttribute('aria-selected', k === i); t.tabIndex = k === i ? 0 : -1; });
   shots.forEach((s, k) => s.classList.toggle('on', k === i));
   $('stage').setAttribute('aria-labelledby', 't' + i); if (focus) tabs[i].focus();
+  syncWalk(i === 0);
+}
+/* 5b. the recording in the first tab: loaded and played only while it is on screen */
+const walk = $('walk');
+if (walk && !reduced && !(navigator.connection && navigator.connection.saveData)) {
+  const dark = matchMedia('(prefers-color-scheme: dark)');
+  let seen = false;
+  syncWalk = restart => {
+    if (!seen || !shots[0].classList.contains('on')) { walk.pause(); return; }
+    const src = dark.matches ? walk.dataset.dark : walk.dataset.light;
+    if (walk.dataset.src !== src) { walk.classList.remove('live'); walk.dataset.src = src; walk.src = src; }
+    else if (restart) walk.currentTime = 0;
+    walk.play().catch(() => {});
+  };
+  walk.addEventListener('playing', () => walk.classList.add('live'));
+  new IntersectionObserver(es => { seen = es[0].isIntersecting; syncWalk(); }, {threshold: .25}).observe($('stage'));
+  dark.addEventListener('change', () => syncWalk());
 }
 tabs.forEach((t, i) => {
   t.addEventListener('click', () => pick(i));
