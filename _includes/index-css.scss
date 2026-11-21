@@ -50,37 +50,12 @@ h1{font-size:clamp(56px,11.4vw,176px);font-weight:500;letter-spacing:-.052em;lin
 .film .lede,.film blockquote{color:var(--ink)}
 .film h2 .dim{color:var(--ink-2)}
 .privacy video{opacity:.5}
-.hero-film{margin-top:clamp(-70px,-5vw,-24px);min-height:clamp(640px,88vh,900px);display:grid}
-.hero-film .wrap{display:grid;grid-template-columns:1fr auto;align-items:center;gap:32px;padding-block:clamp(110px,13vw,170px) clamp(70px,9vw,120px)}
-.film-note{align-self:end;display:grid;gap:8px;max-width:30ch}
-.film-note p{color:var(--ink)}
-.film-note p:last-child{font-size:14.5px;line-height:1.45}
-@media (max-width:860px){.hero-film .wrap{grid-template-columns:1fr}.film-note{order:2}}
 /* phone: the number belongs on the first screen */
-@media (max-width:600px){.hero{padding-top:24px}.hero .lede-a{display:none}.hero-row{gap:20px 48px;margin-top:22px}.hero-cta .textlink{display:none}.hero-film .wrap{padding-top:36px}}
+@media (max-width:600px){.hero{padding-top:24px}.hero .lede-a{display:none}.hero-row{gap:20px 48px;margin-top:22px}.hero-cta .textlink{display:none}}
 
 /* glass budget card */
 .glass{background:var(--glass);-webkit-backdrop-filter:blur(26px) saturate(1.5);backdrop-filter:blur(26px) saturate(1.5);border:1px solid var(--glass-line);border-radius:28px;box-shadow:var(--shadow)}
-.budget{width:min(400px,100%);padding:20px 22px 18px;justify-self:end}
-@media (max-width:860px){.budget{justify-self:stretch;width:100%}}
-.b-head{display:flex;justify-content:space-between;margin-bottom:10px}
-.b-num{font-size:68px;font-weight:600;letter-spacing:-.05em;line-height:1;margin-left:-.03em}
-.b-num small{font-size:21px;font-weight:500;letter-spacing:-.015em;color:var(--ink-2);margin-left:9px}
-.b-meta{font-size:13.5px;color:var(--ink-2);margin-top:8px}
-.b-up{font-size:13px;color:var(--ink-2);margin-top:3px}
-.b-up::before{content:"↗";color:var(--ok);margin-right:6px}
-.alloc{display:grid;gap:11px;margin-top:16px;padding:16px 0 4px;border-top:1px solid var(--line)}
-.alloc li{display:grid;grid-template-columns:1fr auto;gap:5px 12px;font-size:14px}
-.alloc b{font-weight:600}
-.alloc .bar{grid-column:1/-1;height:5px;border-radius:9px;background:var(--line);overflow:hidden}
-.alloc .bar i{display:block;height:100%;border-radius:9px;transition:width .6s cubic-bezier(.2,.7,.2,1)}
-.alloc span:not(.bar){color:var(--ink-2)}
-.b-form{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;padding-top:14px;border-top:1px solid var(--line)}
 .field{height:44px;border-radius:14px;border:1px solid var(--line-2);background:color-mix(in srgb,var(--surface) 70%,transparent);padding:0 14px;font-size:15px;width:100%;min-width:0}
-.b-form .btn{grid-column:1/-1;justify-content:center;height:46px;padding:0 18px}
-.b-foot{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:22px}
-.b-err{font-size:13px;color:var(--d1);font-weight:500}
-.reset{background:none;border:0;padding:4px 0;font-size:13px;color:var(--ink-2);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 
 /* facts ledger */
 .facts{padding-block:0}
@@ -223,3 +198,27 @@ h1{font-size:clamp(56px,11.4vw,176px);font-weight:500;letter-spacing:-.052em;lin
 .closing .wrap{display:grid;gap:28px;justify-items:start}
 .closing h2{font-size:clamp(48px,9vw,140px);letter-spacing:-.05em;line-height:.92}
 .closing h2 .dim{color:var(--ink-3)}
+
+/* the number stage: the hero is one live number under a thin mist */
+.numstage{position:relative;margin-top:clamp(20px,2.6vw,36px);padding-block:clamp(22px,2.6vw,36px) clamp(56px,8vw,112px);overflow:hidden;isolation:isolate}
+.numstage canvas{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}
+.numstage .wrap{position:relative;z-index:1;display:grid;gap:clamp(12px,1.6vw,22px)}
+.n-eyebrow{display:flex;justify-content:space-between;gap:16px}
+.n-num{--k:1;font-size:calc(clamp(120px,24vw,340px)*var(--k));font-weight:500;letter-spacing:-.06em;line-height:.86;display:flex;align-items:baseline;gap:.05em;margin-left:-.04em;transition:filter 1.4s cubic-bezier(.2,.7,.2,1),font-size .4s cubic-bezier(.2,.7,.2,1)}
+.n-num.fogged{filter:blur(22px);transition:none}
+.n-num.refocus{animation:refocus .7s cubic-bezier(.2,.7,.2,1)}
+@keyframes refocus{from{filter:blur(12px)}to{filter:blur(0)}}
+.n-num small{font-size:max(.15em,18px);letter-spacing:-.02em;color:var(--ink-2);font-weight:500}
+.n-form{display:flex;flex-wrap:wrap;align-items:baseline;gap:.3em .38em;font-size:clamp(18px,2vw,27px);color:var(--ink-2);letter-spacing:-.018em;line-height:1.3}
+.n-field{display:inline-flex;align-items:baseline;gap:.06em;color:var(--ink);border-bottom:1px solid var(--line-2);padding:0 .12em .04em;cursor:text}
+.n-field:focus-within{border-color:var(--ink)}
+.n-field input{font:inherit;letter-spacing:inherit;color:inherit;background:none;border:0;outline:0;padding:0;margin:0;width:var(--w,7ch);text-align:center;border-radius:0;-webkit-appearance:none;appearance:none}
+.n-note{font-size:14px;color:var(--ink-3);justify-self:start}
+/* wide screens: the headline steps back to one row so the number owns the first screen */
+@media (min-width:900px){
+  .hero{padding-top:clamp(24px,3vw,40px)}
+  .hero>.wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,430px);column-gap:clamp(32px,6vw,96px);align-items:end}
+  .hero>.wrap>.mono{grid-column:1/-1}
+  .hero h1{font-size:clamp(52px,6vw,88px)}
+  .hero-row{display:grid;gap:22px;margin-top:0}
+}

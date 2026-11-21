@@ -42,35 +42,19 @@
     </div>
   </div>
 
-  <div class="film hero-film" id="heroFilm">
-    <video id="lake" muted playsinline preload="none" poster="/assets/film/lake-mist.jpg" aria-hidden="true" tabindex="-1"></video>
+  <div class="numstage" id="numStage">
+    <canvas id="fog" aria-hidden="true"></canvas>
     <div class="wrap">
-      <div class="film-note">
-        <p class="mono" id="filmHint">Scroll, and watch it clear</p>
-        <p>The card is live. Add an expense and the number recalculates in your browser. Nothing is sent anywhere.</p>
-      </div>
-
-      <div class="glass budget" id="budget">
-        <div class="b-head"><span class="mono">You can spend</span><span class="mono">Sample ledger</span></div>
-        <p class="b-num tnum" aria-live="polite"><span id="bDay">$78</span><small>a day</small></p>
-        <p class="b-meta tnum" id="bMeta">$624.96 left after bills · 8 days until payday</p>
-        <p class="b-up tnum" id="bUp">Up from $67 a day on payday</p>
-        <ul class="alloc tnum" aria-label="Envelopes">
-          <li><b>Food &amp; Dining</b><span id="a1l">$257.25 left</span><span class="bar"><i id="a1b" style="width:44.1%;background:var(--d1)"></i></span></li>
-          <li><b>Shopping &amp; Fun</b><span id="a2l">$157.01 left</span><span class="bar"><i id="a2b" style="width:7.6%;background:var(--d2)"></i></span></li>
-          <li><b>Transportation</b><span id="a3l">$108.00 left</span><span class="bar"><i id="a3b" style="width:22.9%;background:var(--d3)"></i></span></li>
-          <li><b>Health</b><span id="a4l">$22.70 left</span><span class="bar"><i id="a4b" style="width:71.6%;background:var(--d4)"></i></span></li>
-          <li><b>Everything else</b><span id="a5l">$80.00 left</span><span class="bar"><i id="a5b" style="width:20%;background:var(--d5)"></i></span></li>
-        </ul>
-        <form class="b-form" id="bForm" novalidate>
-          <div><label class="sr" for="bCat">Envelope</label>
-            <select class="field" id="bCat"><option value="0" selected>Food &amp; Dining</option><option value="1">Shopping &amp; Fun</option><option value="2">Transportation</option><option value="3">Health</option><option value="4">Everything else</option></select></div>
-          <div><label class="sr" for="bAmt">Amount in dollars</label>
-            <input class="field tnum" id="bAmt" inputmode="decimal" autocomplete="off" placeholder="$ 12.50"></div>
-          <button class="btn" type="submit">Add expense</button>
-          <div class="b-foot"><span class="b-err" id="bErr" role="alert"></span><button class="reset" type="button" id="bReset">Reset sample</button></div>
-        </form>
-      </div>
+      <p class="mono n-eyebrow"><span>You can spend</span><span>Try your own numbers</span></p>
+      <p class="n-num tnum" id="nNum" aria-live="polite"><span id="nDay">$78</span><small>a day</small></p>
+      <form class="n-form" id="nForm" novalidate>
+        <span>I have</span>
+        <label class="n-field"><span aria-hidden="true">$</span><input class="tnum" id="nLeft" inputmode="decimal" autocomplete="off" value="624.96" size="7" aria-label="Dollars left after bills"></label>
+        <span>left after bills, and payday is in</span>
+        <label class="n-field"><input class="tnum" id="nDays" inputmode="numeric" autocomplete="off" value="8" size="2" aria-label="Days until payday"></label>
+        <span>days.</span>
+      </form>
+      <p class="n-note">Worked out in your browser. Nothing is sent anywhere.</p>
     </div>
   </div>
 </div>
@@ -261,65 +245,82 @@ function tween(from, to, ms, step) {
   (function f(now) { const p = clamp((now - t0) / ms, 0, 1); step(from + (to - from) * ease(p)); if (p < 1) requestAnimationFrame(f); })(t0);
 }
 
-/* 1. live number card (figures from the real Overview screen, sample ledger).
-   What is left in the envelopes, divided over the days until payday. */
-const DAYS = 8, ON_PAYDAY = 67;
-const base = [{spent: 202.75, cap: 460}, {spent: 12.99, cap: 170}, {spent: 32, cap: 140}, {spent: 57.30, cap: 80}, {spent: 20, cap: 100}];
-let cats = base.map(c => ({...c})), shownDay = 78;
-function drawBudget() {
-  const left = Math.round(cats.reduce((s, c) => s + c.cap - c.spent, 0) * 100) / 100, day = Math.floor(left / DAYS);
-  cats.forEach((c, i) => {
-    $('a' + (i + 1) + 'l').textContent = usd(c.cap - c.spent) + ' left';
-    $('a' + (i + 1) + 'b').style.width = clamp(c.spent / c.cap * 100, 0, 100).toFixed(1) + '%';
-  });
-  tween(shownDay, day, 600, v => { $('bDay').textContent = '$' + Math.round(v); });
-  shownDay = day;
-  $('bMeta').textContent = usd(left) + ' left after bills · ' + DAYS + ' days until payday';
-  $('bUp').hidden = day <= ON_PAYDAY;
+/* 1. the number. What is left after bills, divided over the days until payday,
+   rounded down: the same sum the app shows on Overview. */
+const nNum = $('nNum'), nDay = $('nDay'), nLeft = $('nLeft'), nDays = $('nDays');
+let shownDay = 78, fogPuff = () => {};
+function drawNumber() {
+  const left = parseFloat(nLeft.value.replace(',', '.').replace(/[^0-9.]/g, '')), days = parseInt(nDays.value.replace(/\D/g, ''), 10);
+  nLeft.style.setProperty('--w', Math.max(4, nLeft.value.length + 1) + 'ch'); nDays.style.setProperty('--w', Math.max(2, nDays.value.length + 1) + 'ch');
+  if (!(left >= 0) || !(days >= 1) || left > 999999 || days > 99) return;
+  const day = Math.floor(left / days); if (day === shownDay) return;
+  const len = ('$' + day.toLocaleString('en-US')).length; nNum.style.setProperty('--k', len <= 3 ? 1 : len === 4 ? .8 : len === 5 ? .64 : len === 6 ? .54 : .46);
+  tween(shownDay, day, 500, v => { nDay.textContent = '$' + Math.round(v).toLocaleString('en-US'); }); shownDay = day;
+  if (!reduced) { nNum.classList.remove('refocus'); void nNum.offsetWidth; nNum.classList.add('refocus'); fogPuff(); }
 }
-$('bForm').addEventListener('submit', e => {
-  e.preventDefault();
-  const i = +$('bCat').value, c = cats[i];
-  const v = Math.round(parseFloat($('bAmt').value.replace(',', '.').replace(/[^0-9.]/g, '')) * 100) / 100;
-  if (!(v > 0)) { $('bErr').textContent = 'Enter an amount first.'; $('bAmt').focus(); return; }
-  const room = Math.round((c.cap - c.spent) * 100) / 100;
-  if (v > room) { $('bErr').textContent = 'This sample has ' + usd(room) + ' left there.'; $('bAmt').focus(); return; }
-  c.spent = Math.round((c.spent + v) * 100) / 100; $('bAmt').value = ''; $('bErr').textContent = ''; drawBudget();
-});
-$('bAmt').addEventListener('input', () => { $('bErr').textContent = ''; });
-$('bReset').addEventListener('click', () => { cats = base.map(c => ({...c})); $('bErr').textContent = ''; $('bAmt').value = ''; drawBudget(); });
+[nLeft, nDays].forEach(i => i.addEventListener('input', drawNumber));
+$('nForm').addEventListener('submit', e => e.preventDefault());
+drawNumber();
 
-/* 2. films. With a mouse, scrolling scrubs the mist away (the page still scrolls
-   normally, nothing is pinned). On touch the same film simply plays once. */
-const lake = $('lake'), band = $('heroFilm'), sky = $('sky'), lake2 = $('lake2');
-/* if the browser refuses to play (iOS Low Power Mode), show the
-   clear still instead of a stuck first frame */
+/* 2. the mist over the number: one small fragment shader, no library. It opens
+   around the number when the page loads and parts under the pointer. */
+(() => {
+  const stage = $('numStage'), cv = $('fog');
+  if (reduced) { cv.remove(); return; }
+  const gl = cv.getContext('webgl', {premultipliedAlpha: true, antialias: false, powerPreference: 'low-power'});
+  nNum.classList.add('fogged'); requestAnimationFrame(() => requestAnimationFrame(() => nNum.classList.remove('fogged')));
+  if (!gl) { cv.remove(); return; }
+  const sh = (type, src) => { const o = gl.createShader(type); gl.shaderSource(o, src); gl.compileShader(o); return o; };
+  const pr = gl.createProgram();
+  gl.attachShader(pr, sh(gl.VERTEX_SHADER, 'attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}'));
+  gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, `precision mediump float;uniform vec2 r;uniform float t,c;uniform vec3 fog,p;uniform vec4 b;
+float h(vec2 v){return fract(sin(dot(v,vec2(127.1,311.7)))*43758.5453);}
+float n(vec2 v){vec2 i=floor(v),f=fract(v);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1.,0.)),f.x),mix(h(i+vec2(0.,1.)),h(i+vec2(1.,1.)),f.x),f.y);}
+float fbm(vec2 v){float a=.5,s=0.;for(int i=0;i<5;i++){s+=a*n(v);v=v*2.03+vec2(1.7,9.2);a*=.5;}return s;}
+void main(){vec2 uv=gl_FragCoord.xy/r;vec2 q=vec2(uv.x*r.x/r.y,uv.y);
+float m=fbm(q*1.5+vec2(t*.03,t*.011)+.8*fbm(q*2.2-vec2(t*.018,0.)));
+vec2 bc=(b.xy+b.zw)*.5,bh=(b.zw-b.xy)*.5,e=abs(uv-bc)-bh;float o=length(max(e,0.))+min(max(e.x,e.y),0.);
+float mask=smoothstep(-.03,.22,o),k=smoothstep(0.,1.,c*1.9-length((uv-bc)/max(bh,vec2(.001)))*.5);
+float dens=smoothstep(.3,.78,m)*mix(1.,mask,k)*mix(.96,.72,c);
+dens*=smoothstep(0.,.2,uv.y)*smoothstep(1.,.78,uv.y);
+vec2 pd=(uv-p.xy)*vec2(r.x/r.y,1.);dens*=1.-p.z*exp(-dot(pd,pd)*11.);
+dens=clamp(dens+(h(gl_FragCoord.xy+t)-.5)*.012,0.,1.);gl_FragColor=vec4(fog*dens,dens);}`));
+  gl.linkProgram(pr); if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) { cv.remove(); return; }
+  gl.useProgram(pr);
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(pr, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  const U = k => gl.getUniformLocation(pr, k), uR = U('r'), uT = U('t'), uC = U('c'), uF = U('fog'), uP = U('p'), uB = U('b');
+  const inked = [nDay, nNum.querySelector('small'), ...$('nForm').children, stage.querySelector('.n-note')];
+  const dark = matchMedia('(prefers-color-scheme: dark)');
+  const tint = () => { const f = dark.matches ? [.56, .57, .62] : [.8, .81, .85]; gl.uniform3f(uF, f[0], f[1], f[2]); };
+  tint(); dark.addEventListener('change', tint);
+  const size = () => { const w = Math.max(2, Math.round(stage.clientWidth * .5)), h = Math.max(2, Math.round(stage.clientHeight * .5)); if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; gl.viewport(0, 0, w, h); gl.uniform2f(uR, w, h); } };
+  let clear = 0, goal = 1, px = .5, py = .5, pz = 0, pgoal = 0, seen = false, raf = 0, last = 0;
+  fogPuff = () => { clear = Math.min(clear, .45); };
+  const frame = now => {
+    raf = 0; if (!seen || document.hidden) return;
+    raf = requestAnimationFrame(frame); const dt = now - last; if (dt < 30) return; last = now; const step = Math.min(dt, 120);
+    size(); clear += (goal - clear) * (1 - Math.exp(-step / 700)); pz += (pgoal - pz) * (1 - Math.exp(-step / 200));
+    const sb = stage.getBoundingClientRect(); let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+    for (const el of inked) { const q = el.getBoundingClientRect(); x0 = Math.min(x0, q.left); y0 = Math.min(y0, q.top); x1 = Math.max(x1, q.right); y1 = Math.max(y1, q.bottom); }
+    gl.uniform4f(uB, (x0 - sb.left) / sb.width, 1 - (y1 - sb.top) / sb.height, (x1 - sb.left) / sb.width, 1 - (y0 - sb.top) / sb.height);
+    gl.uniform1f(uT, now / 1000); gl.uniform1f(uC, clear); gl.uniform3f(uP, px, py, pz);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  };
+  const kick = () => { if (!raf) raf = requestAnimationFrame(frame); };
+  new IntersectionObserver(es => { seen = es[0].isIntersecting; kick(); }).observe(stage);
+  document.addEventListener('visibilitychange', kick);
+  stage.addEventListener('pointermove', e => { const b = stage.getBoundingClientRect(); px = (e.clientX - b.left) / b.width; py = 1 - (e.clientY - b.top) / b.height; pgoal = 1; });
+  stage.addEventListener('pointerleave', () => { pgoal = 0; });
+})();
+
+/* 3. films: the sky behind the privacy proof and the lake at the end. If the
+   browser refuses to play (iOS Low Power Mode), show the clear still instead. */
+const sky = $('sky'), lake2 = $('lake2');
 const still = v => { v.removeAttribute('src'); v.replaceChildren(); v.load(); v.poster = '/assets/film/lake-clear.jpg'; };
 const once = (el, fn, threshold) => { const io = new IntersectionObserver(es => { if (es[0].isIntersecting) { io.disconnect(); fn(); } }, {threshold}); io.observe(el); };
-if (reduced) {
-  lake.poster = lake2.poster = '/assets/film/lake-clear.jpg';
-} else {
-  if (matchMedia('(hover:hover) and (pointer:fine)').matches) {
-    let cur = 0, target = 0, raf = 0, inView = false;
-    const wanted = () => { const r = band.getBoundingClientRect(), vh = innerHeight, start = vh * 0.98, end = Math.min(vh * 0.12, (vh - r.height) / 2 + vh * 0.1); return clamp((start - r.top) / (start - end), 0, 1); };
-    const scrub = () => {
-      raf = 0; if (!lake.duration) return;
-      target = wanted() * (lake.duration - 0.06);
-      cur += (target - cur) * 0.14;
-      if (Math.abs(target - cur) < 0.004) cur = target;
-      if (Math.abs(lake.currentTime - cur) > 0.01) lake.currentTime = cur;
-      if (inView && cur !== target) raf = requestAnimationFrame(scrub);
-    };
-    const kick = () => { if (inView && !raf) raf = requestAnimationFrame(scrub); };
-    lake.addEventListener('loadedmetadata', () => { cur = wanted() * (lake.duration - 0.06); lake.currentTime = cur; kick(); });
-    new IntersectionObserver(es => { inView = es[0].isIntersecting; kick(); }).observe(band);
-    addEventListener('scroll', kick, {passive: true}); addEventListener('resize', kick);
-    lake.preload = 'auto'; lake.src = '/assets/film/lake-scrub.mp4';
-  } else {
-    $('filmHint').textContent = 'Watch it clear';
-    lake.src = '/assets/film/lake.mp4';
-    once(band, () => { lake.play().catch(() => still(lake)); }, 0.3);
-  }
+if (reduced) lake2.poster = '/assets/film/lake-clear.jpg';
+else {
   new IntersectionObserver(es => { es[0].isIntersecting ? sky.play().catch(() => {}) : sky.pause(); }, {rootMargin: '100px'}).observe(sky);
   once(lake2, () => { lake2.play().catch(() => still(lake2)); }, 0.35);
 }
