@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{ page.title }}{{ page.title_suffix | default: site.title_suffix }}</title>
+<meta name="description" content="{{ page.description }}">
+<link rel="canonical" href="{{ site.url }}{{ page.canonical | default: page.url }}">
+<meta property="og:type" content="{{ page.og_type | default: 'website' }}">{% if page.noindex %}
+<meta name="robots" content="noindex,follow">{% endif %}
+<meta property="og:site_name" content="Onori">
+<meta property="og:title" content="{{ page.title }}{{ page.title_suffix | default: site.title_suffix }}">
+<meta property="og:description" content="{{ page.description }}">
+<meta property="og:url" content="{{ site.url }}{{ page.canonical | default: page.url }}">
+<meta property="og:image" content="{{ site.url }}/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#F2F2F4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0C0D11" media="(prefers-color-scheme: dark)">
+{% if site.app_store_id and site.app_store_id != "" %}<meta name="apple-itunes-app" content="app-id={{ site.app_store_id }}">
+{% endif %}{% if page.jsonld %}<script type="application/ld+json">
+{{ page.jsonld }}</script>
+{% endif %}{% if page.date %}<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","headline":{{ page.headline | jsonify }},"datePublished":"{{ page.date | date: '%Y-%m-%d' }}","dateModified":"{{ page.date | date: '%Y-%m-%d' }}","author":{"@type":"Organization","name":"Onori"},"image":"{{ site.url }}/assets/og.png","publisher":{"@type":"Organization","name":"Onori","url":"{{ site.url }}"},"mainEntityOfPage":"{{ site.url }}{{ page.url }}"}</script>
+{% endif %}{% if page.date %}<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ site.url }}/"},{"@type":"ListItem","position":2,"name":"Blog","item":"{{ site.url }}/blog/"},{"@type":"ListItem","position":3,"name":{{ page.headline | jsonify }}}]}</script>
+{% elsif page.breadcrumb %}<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ site.url }}/"}{% for c in page.breadcrumb %},{"@type":"ListItem","position":{{ forloop.index | plus: 1 }},"name":"{{ c.name }}"{% if c.url %},"item":"{{ site.url }}{{ c.url }}"{% endif %}}{% endfor %}]}</script>
+{% endif %}{% feed_meta %}
+<link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/instrument-sans.woff2">
+<link rel="stylesheet" href="/assets/fonts.css">
+<link rel="stylesheet" href="/assets/site.css">
+{% if page.head_extra %}{{ page.head_extra }}{% endif %}</head><body>
+<a class="skip" href="#main">Skip to content</a>
+{% include header.html %}<main id="main"><div class="wrap">
+{{ content }}</div></main>
+{% include footer.html %}</body></html>

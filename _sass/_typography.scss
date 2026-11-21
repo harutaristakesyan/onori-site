@@ -1,0 +1,27 @@
+/* ------------------------------- typography -------------------------------
+   Content pages only (the homepage carries its own inline CSS): one reading
+   column, left-aligned, the second half of a heading set in the quiet ink. */
+main>.wrap{--wrap:920px;padding-bottom:8px}
+h1{font-size:clamp(40px,6.2vw,76px);font-weight:500;letter-spacing:-.042em;line-height:.98;margin:18px 0 24px;text-wrap:balance}
+h1 em,h2 em{font-style:normal;color:var(--ink-3)}
+h2{font-size:clamp(26px,3.2vw,36px);font-weight:500;letter-spacing:-.03em;line-height:1.1;margin:64px 0 14px;text-wrap:balance}
+h3{font-size:18px;font-weight:600;letter-spacing:-.01em;line-height:1.3;margin:24px 0 8px}
+p{margin:12px 0;color:var(--ink-2)}
+strong{color:var(--ink);font-weight:600}
+main a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--line-2);text-underline-offset:3px;transition:text-decoration-color .2s}
+main a:hover{text-decoration-color:var(--ink)}
+blockquote{border-left:2px solid var(--ink);padding:4px 0 4px 20px;color:var(--ink);margin:28px 0;font-size:21px;line-height:1.4;letter-spacing:-.015em}
+.sub{color:var(--ink-2);font-size:clamp(18px,1.6vw,21px);max-width:60ch;margin:0 0 40px;line-height:1.5;text-wrap:pretty}
+.crumb{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);margin:44px 0 0}
+.crumb a{text-decoration:none}
+.note{font-size:14px;color:var(--ink-2)}
+.meta{font-family:var(--mono);font-size:12.5px;letter-spacing:.02em;color:var(--ink-2);margin-bottom:28px}
+
+article{max-width:720px}
+article h2{margin-top:48px}
+article p,article li{font-size:17.5px;line-height:1.6}
+
+/* --------------------------------- lists ---------------------------------- */
+ul.checks{list-style:none;max-width:68ch;margin:16px 0}
+ul.checks li{padding:8px 0 8px 28px;position:relative;color:var(--ink-2)}
+ul.checks li::before{content:"";position:absolute;left:0;top:1.25em;width:14px;height:1px;background:var(--ink)}

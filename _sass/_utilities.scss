@@ -1,0 +1,14 @@
+/* -------------------------------- utilities ------------------------------- */
+.center{text-align:center}
+.tnum{font-variant-numeric:tabular-nums}
+.mono{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+
+/* ---------------------------------- a11y ---------------------------------- */
+::selection{background:color-mix(in srgb,var(--ink) 18%,transparent)}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:6px}
+.skip{position:absolute;left:12px;top:-60px;background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:10px;font-weight:600;text-decoration:none;z-index:100}
+.skip:focus{top:12px}
+@media (prefers-reduced-motion: reduce){
+ *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+}

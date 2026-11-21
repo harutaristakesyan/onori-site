@@ -1,0 +1,8 @@
+<header class="site-header"><div class="wrap"><nav class="nav" aria-label="Main">
+  <a class="logo" href="/" aria-label="Onori, home"><span class="mark" aria-hidden="true"><svg viewBox="196 196 632 632"><g id="onori-o" fill="currentColor"><path d="M566.9 215A302 302 0 1 0 809 457.1A56 56 0 0 0 698.8 477.5A190 190 0 1 1 546.5 325.2A56 56 0 0 0 566.9 215Z"/><circle cx="685.9" cy="338.1" r="60"/></g></svg></span>Onori</a>
+  <input class="navtoggle" type="checkbox" id="nav-toggle" aria-label="Menu">
+  <label class="navburger" for="nav-toggle" aria-hidden="true"></label>
+  <ul>
+{% include nav-links.html %}  </ul>
+  {% if site.app_store_url and site.app_store_url != "" %}<a class="btn cta" href="{{ site.app_store_url }}"><span class="cta-lg">Download on the App Store</span><span class="cta-sm">Get Onori</span></a>{% else %}<span class="btn cta soon"><span class="cta-lg">Coming soon</span><span class="cta-sm">Soon</span></span>{% endif %}
+</nav></div></header>

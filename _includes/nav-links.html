@@ -1,0 +1,2 @@
+{% for item in site.data.nav %}<li><a href="{{ item.url }}"{% if page.nav == item.key %} aria-current="page"{% endif %}>{{ item.label }}</a></li>
+{% endfor %}<li><a href="mailto:support@onori.money">Support</a></li>

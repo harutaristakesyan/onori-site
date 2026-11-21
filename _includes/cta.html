@@ -1,0 +1,2 @@
+{% comment %}The App Store button, or its "coming soon" stand-in while site.app_store_url is empty.
+Parameters: label (when live), soon (while not live), class.{% endcomment %}{% if site.app_store_url and site.app_store_url != "" %}<a class="btn{% if include.class %} {{ include.class }}{% endif %}" href="{{ site.app_store_url }}">{{ include.label | default: "Download on the App Store" }}</a>{% else %}<span class="btn soon{% if include.class %} {{ include.class }}{% endif %}">{{ include.soon | default: "Coming soon to the App Store" }}</span>{% endif %}

@@ -1,0 +1,48 @@
+---
+layout: page
+title: "FAQ"
+title_suffix: " — Onori Paycheck Budget"
+description: "Where your data is stored, what is free and what Plus adds, how a pay period works, family sharing, receipts read on device and cancellations: the short answers."
+nav: "faq"
+jsonld: |
+  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"Where is my data stored?","acceptedAnswer":{"@type":"Answer","text":"On your devices and in your personal iCloud (CloudKit private database). Onori has no servers, no analytics and no ads."}},
+  {"@type":"Question","name":"Do I need to create an account?","acceptedAnswer":{"@type":"Answer","text":"No. Onori uses the iCloud account already on your iPhone."}},
+  {"@type":"Question","name":"What is free?","acceptedAnswer":{"@type":"Answer","text":"The whole budget kept by hand: the number you can spend a day, paychecks, envelopes, bills, savings goals, widgets, Siri, the Mac app and CSV export. There is no countdown."}},
+  {"@type":"Question","name":"What does Plus add?","acceptedAnswer":{"@type":"Answer","text":"Apple Pay purchases saved on their own, receipts scanned and read, bills marked as paid automatically, insights and a weekly digest, household sharing and multi-currency."}},
+  {"@type":"Question","name":"What is a pay period?","acceptedAnswer":{"@type":"Answer","text":"The days from one payday to the next. Onori budgets each paycheck over its own pay period instead of the calendar month."}}]}
+breadcrumb:
+  - name: "FAQ"
+---
+
+<p class="crumb"><a href="/">Home</a> → FAQ</p>
+<h1>Frequently asked <em>questions</em></h1>
+<p class="sub">Can't find your answer? Email <a href="mailto:support@onori.money">support@onori.money</a>. We answer every message, usually within a day.</p>
+
+<h2>The budget</h2>
+<details open><summary>What is the number?</summary><p>What you can spend a day until payday. Onori takes your paycheck, sets aside savings and the bills due before the next payday, subtracts what you have spent, and divides what is left over the days that remain, today included.</p></details>
+<details><summary>What is a pay period?</summary><p>The days from one payday to the next. Onori plans each paycheck over its own pay period instead of the calendar month, because that is when the money actually arrives. Every week, every two weeks, twice a month and monthly all work.</p></details>
+<details><summary>What if money arrives without a schedule?</summary><p>A side job or a refund is added as income when it arrives. It joins the pay period you are in and raises what you can spend at once.</p></details>
+<details><summary>Does Onori connect to my bank?</summary><p>No, and it never asks for a bank login. Purchases are added by hand in a few taps, or with Plus they arrive on their own from Apple Pay and from scanned receipts. <a href="/receipts.html">How that works →</a></p></details>
+
+<h2>Data &amp; privacy</h2>
+<details><summary>Where is my data stored?</summary><p>On your devices and in your personal iCloud (CloudKit private database). Onori has no servers: there is literally nothing on our side that could see your data. No analytics, no tracking, no ads. <a href="/privacy-first.html">More →</a></p></details>
+<details><summary>Do I need to create an account?</summary><p>No. Onori uses the iCloud account already on your iPhone. Nothing to sign up for, no password to remember.</p></details>
+<details><summary>Does Onori send my receipts to an AI service?</summary><p>No. A scanned receipt is read on your iPhone, and nothing about it leaves the device. Onori has no assistant of its own; an outside assistant sees your ledger only if you export a file for it or connect it yourself on a Mac.</p></details>
+<details><summary>Can I export my data?</summary><p>Always. CSV export is free and stays free, with or without Plus. Your data is never held hostage.</p></details>
+
+<h2>Price</h2>
+<details><summary>What is free?</summary><p>The whole budget kept by hand: the number, paychecks, envelopes, bills, savings goals, widgets, Siri and Shortcuts, the Mac app, sync through your iCloud and CSV export. There is no countdown and no transaction limit.</p></details>
+<details><summary>What does Plus add?</summary><p>Onori does the typing: Apple Pay purchases saved on their own, receipts scanned and read, bills marked as paid automatically, insights and a weekly digest, household sharing and multi-currency. $6.99 a month, $39.99 a year or $79.99 once. <a href="/pricing.html">Pricing →</a></p></details>
+<details><summary>What happens if I stop subscribing?</summary><p>Nothing locks. The budget keeps working by hand and everything you entered stays yours. Only the things Plus was doing for you stop.</p></details>
+<details><summary>How do I cancel or get a refund?</summary><p>Cancel: iPhone Settings → your name → Subscriptions → Onori. Refunds are handled by Apple at <a href="https://reportaproblem.apple.com">reportaproblem.apple.com</a>.</p></details>
+
+<h2>Family</h2>
+<details><summary>How does sharing a household work?</summary><p>You invite your partner from Settings → Family, through the iCloud sharing sheet. The ledger then syncs between your own iCloud accounts, and both of you can add and change things. Inviting is part of Plus; joining is free. <a href="/family.html">More →</a></p></details>
+<details><summary>My partner isn't in my Apple family group. Can we still share?</summary><p>Yes. The household ledger can be shared with any person who has an Apple Account. Apple Family Sharing is a separate thing: it is what shares the Plus purchase itself with your family group.</p></details>
+
+<h2>App</h2>
+<details><summary>Which devices are supported?</summary><p>iPhone with iOS 26 or later and Mac with macOS 26 or later. Home Screen widgets, Control Center buttons, Siri and Shortcuts are included.</p></details>
+<details><summary>Which languages?</summary><p>English, German and Russian.</p></details>
+<details><summary>Does Onori support multiple currencies?</summary><p>Yes. The budget runs in one main currency, and with Plus a purchase can be entered in any other and is converted at the rate of its own day. <a href="/multi-currency.html">More →</a></p></details>
+<details><summary>When can I get it?</summary><p>{% if site.app_store_url and site.app_store_url != "" %}Onori is on the <a href="{{ site.app_store_url }}">App Store</a>.{% else %}Onori is coming to the App Store soon. Until then, write to <a href="mailto:support@onori.money">support@onori.money</a> if you would like to hear when it is out.{% endif %}</p></details>

@@ -1,0 +1,61 @@
+# Onori: GitHub Pages / Jekyll configuration.
+#
+# Only the content pages are templated (layout: page). index.html carries empty
+# front matter and its own inline CSS: it is the standalone scroll-animated page.
+
+url: https://onori.money
+title: Onori
+description: A paycheck budget for iPhone and Mac that lives in your own iCloud.
+# Appended to every page <title>. A page may override with its own
+# `title_suffix:` (pricing and faq carry the longer keyword form).
+title_suffix: " — Onori"
+
+# The App Store link. Empty until the app is on the store: every button that
+# would lead there then reads "Coming soon" (see _includes/cta.html). Set both
+# values on launch day and every page follows.
+app_store_url: ""
+app_store_id: ""
+
+# Nothing here needs Markdown processing; pages are hand-written HTML.
+markdown: kramdown
+
+# sitemap.xml is generated, not hand-maintained, so it can never go stale.
+#
+# Deliberately NOT enabled:
+#   jekyll-seo-tag  would append "| Onori" to every title, drop og:image,
+#                   downgrade twitter:card to "summary", and emit a second
+#                   JSON-LD block beside the hand-written FAQPage/BlogPosting.
+
+# Jekyll's built-in dart-sass compiles assets/site.scss -> /assets/site.css,
+# minified. The source keeps its comments and formatting; only the
+# delivered file is squeezed.
+sass:
+  style: compressed
+  sourcemap: never
+
+# Values shared by every post live here instead of being repeated in each file.
+#
+# NOTE: no blanket `type: pages` default: index.html carries front matter and
+# must NOT get a layout.
+defaults:
+  - scope: { path: "", type: "posts" }
+    values:
+      layout: "post"
+      permalink: "/blog/:title.html"
+      og_type: "article"
+      nav: "blog"
+
+plugins:
+  - jekyll-sitemap
+  - jekyll-feed
+
+# rates/latest.json is deliberately NOT excluded: it is the published daily
+# exchange-rate snapshot the Onori app reads, and it has no front matter, so
+# Jekyll copies it through byte for byte. See scripts/build_rates.py.
+exclude:
+  - CLAUDE.md
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - scripts
+  - vendor

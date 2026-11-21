@@ -1,0 +1,9 @@
+/* ---------------------------- reset & document ---------------------------- */
+*,*::before,*::after{box-sizing:border-box}
+*{margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--display);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:clip}
+img,video{max-width:100%;display:block}
+img{height:auto}
+a{color:inherit}
+button,input,select{font:inherit;color:inherit}

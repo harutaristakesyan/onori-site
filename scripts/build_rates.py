@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build site/rates/latest.json, the daily exchange-rate snapshot the Onori app reads.
+"""Build rates/latest.json , the daily exchange-rate snapshot the Onori app reads.
 
 Why a published file instead of every device calling the provider itself: two
 members of one household fetching minutes apart used to get slightly different
@@ -29,7 +29,7 @@ from datetime import datetime, timedelta, timezone
 PROVIDER = "https://api.frankfurter.dev/v2/rates?base=EUR"
 USER_AGENT = "onori-rates-publisher (+https://onori.money)"
 BASE = "EUR"
-OUTPUT = pathlib.Path(__file__).resolve().parent.parent / "site" / "rates" / "latest.json"
+OUTPUT = pathlib.Path(__file__).resolve().parent.parent / "rates" / "latest.json"
 
 # The app stops trusting a snapshot at 72h; failing at 48 means a wedged
 # publisher is a red run before it is ever a user-visible fallback.

@@ -1,0 +1,34 @@
+---
+layout: page
+title: "A Private Budget App — No Servers, No Tracking"
+description: "Your financial data lives on your devices and in your personal iCloud. No servers, no analytics, no ads, no account."
+nav: "privacy-first"
+breadcrumb:
+  - name: "Privacy"
+---
+
+<p class="crumb"><a href="/">Home</a> → Privacy</p>
+<h1>Privacy you don't have to <em>trust.</em> It's architecture.</h1>
+<p class="sub">Every finance app promises privacy in a policy document. Onori does something stronger: it is built so that reading your data is technically impossible for us.</p>
+
+<h2>The architecture</h2>
+<div class="grid">
+<div class="card"><h3>No servers</h3><p>Onori has no backend. Your data is stored on your devices and synced through your personal iCloud (CloudKit private database). There is nothing on our side to hack, subpoena or sell.</p></div>
+<div class="card"><h3>No account</h3><p>Nothing to sign up for. Onori uses the iCloud account already on your phone. We don't know your email, your name, or that you exist.</p></div>
+<div class="card"><h3>No tracking</h3><p>Zero analytics SDKs, zero ads, zero third-party code phoning home. We collect no data, so there is none to describe.</p></div>
+</div>
+
+<h2>What this means in practice</h2>
+<ul class="checks">
+<li>Your ledger stays inside Apple's ecosystem: your devices and your private iCloud</li>
+<li>A lock with Face ID on the app itself; while it is locked, widgets and Siri hide your amounts too</li>
+<li>A scanned receipt is read on the iPhone. Nothing about it is sent anywhere</li>
+<li>An assistant sees your ledger only if you connect one yourself, read-only, and merchant names only if you switch that on</li>
+<li>The app asks the network for two things, both public and the same for everyone: the day's exchange rates and the list of currencies. Neither request says anything about you</li>
+<li>If we disappeared tomorrow, your app and your data would keep working</li>
+</ul>
+
+<blockquote>“We couldn't read your data even if we wanted to. There is nothing on our side to read it with.”</blockquote>
+
+<p class="center">{% include cta.html %}</p>
+<p class="note">Formal document: <a href="/privacy.html">Privacy Policy</a> · Deep dive: <a href="/blog/what-no-servers-means.html">What “no servers” actually means</a></p>

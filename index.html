@@ -1,0 +1,418 @@
+---
+---
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Onori — Paycheck Budget for iPhone and Mac</title>
+<meta name="description" content="A paycheck budget that lives in your own iCloud. One number says what you can spend a day until payday. No servers, no tracking, no ads.">
+<link rel="canonical" href="https://onori.money/">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Onori">
+<meta property="og:title" content="Onori — Paycheck Budget for iPhone and Mac">
+<meta property="og:description" content="One number: what you can spend a day until payday. It lives in your own iCloud. No servers, no tracking, no ads.">
+<meta property="og:url" content="https://onori.money/"><meta property="og:image" content="https://onori.money/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#F2F2F4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0C0D11" media="(prefers-color-scheme: dark)">
+{% if site.app_store_id and site.app_store_id != "" %}<meta name="apple-itunes-app" content="app-id={{ site.app_store_id }}">
+{% endif %}<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"MobileApplication","name":"Onori: Paycheck Budget Planner","operatingSystem":"iOS, macOS","applicationCategory":"FinanceApplication","description":"A paycheck budget that lives in your own iCloud. No servers, no tracking, no ads.","publisher":{"@type":"Organization","name":"Onori","url":"https://onori.money"}}
+</script>
+<link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/instrument-sans.woff2">
+<style>{% capture css %}{% include index-css.scss %}{% endcapture %}{{ css | scssify }}</style></head><body class="home">
+<a class="skip" href="#main">Skip to content</a>
+{% include header.html %}
+<main id="main">
+<div class="hero" id="top">
+  <div class="wrap">
+    <p class="mono">No servers · No tracking · No ads</p>
+    <h1>Your money,<br><span class="focus dim">clearly.</span></h1>
+    <div class="hero-row">
+      <p class="lede">A paycheck budget that lives in your own iCloud. One number says what you can spend a day until payday, on iPhone and Mac.</p>
+      <div class="hero-cta">
+        {% include cta.html %}
+        <a class="textlink" href="#screens">See it on iPhone and Mac</a>
+        <p class="mono hero-meta">Free to keep by hand · No account · iOS 26+</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="film hero-film" id="heroFilm">
+    <video id="lake" muted playsinline preload="none" poster="/assets/film/lake-mist.jpg" aria-hidden="true" tabindex="-1"></video>
+    <div class="wrap">
+      <div class="film-note">
+        <p class="mono" id="filmHint">Scroll, and watch it clear</p>
+        <p>The card is live. Add an expense and the number recalculates in your browser. Nothing is sent anywhere.</p>
+      </div>
+
+      <div class="glass budget" id="budget">
+        <div class="b-head"><span class="mono">You can spend</span><span class="mono">Sample ledger</span></div>
+        <p class="b-num tnum" aria-live="polite"><span id="bDay">$78</span><small>a day</small></p>
+        <p class="b-meta tnum" id="bMeta">$624.96 left after bills · 8 days until payday</p>
+        <p class="b-up tnum" id="bUp">Up from $67 a day on payday</p>
+        <ul class="alloc tnum" aria-label="Envelopes">
+          <li><b>Food &amp; Dining</b><span id="a1l">$257.25 left</span><span class="bar"><i id="a1b" style="width:44.1%;background:var(--d1)"></i></span></li>
+          <li><b>Shopping &amp; Fun</b><span id="a2l">$157.01 left</span><span class="bar"><i id="a2b" style="width:7.6%;background:var(--d2)"></i></span></li>
+          <li><b>Transportation</b><span id="a3l">$108.00 left</span><span class="bar"><i id="a3b" style="width:22.9%;background:var(--d3)"></i></span></li>
+          <li><b>Health</b><span id="a4l">$22.70 left</span><span class="bar"><i id="a4b" style="width:71.6%;background:var(--d4)"></i></span></li>
+          <li><b>Everything else</b><span id="a5l">$80.00 left</span><span class="bar"><i id="a5b" style="width:20%;background:var(--d5)"></i></span></li>
+        </ul>
+        <form class="b-form" id="bForm" novalidate>
+          <div><label class="sr" for="bCat">Envelope</label>
+            <select class="field" id="bCat"><option value="0" selected>Food &amp; Dining</option><option value="1">Shopping &amp; Fun</option><option value="2">Transportation</option><option value="3">Health</option><option value="4">Everything else</option></select></div>
+          <div><label class="sr" for="bAmt">Amount in dollars</label>
+            <input class="field tnum" id="bAmt" inputmode="decimal" autocomplete="off" placeholder="$ 12.50"></div>
+          <button class="btn" type="submit">Add expense</button>
+          <div class="b-foot"><span class="b-err" id="bErr" role="alert"></span><button class="reset" type="button" id="bReset">Reset sample</button></div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="facts" aria-label="Onori at a glance"><div class="wrap">
+  <dl>
+    <div><dt class="mono">Data we collect</dt><dd>None</dd></div>
+    <div><dt class="mono">Account to create</dt><dd>None</dd></div>
+    <div><dt class="mono">Runs on</dt><dd>iPhone and Mac</dd></div>
+    <div><dt class="mono">Languages</dt><dd>English, German, Russian</dd></div>
+  </dl>
+</div></section>
+
+<section class="privacy film" id="privacy">
+  <video id="sky" muted loop playsinline preload="metadata" poster="/assets/film/sky.jpg" aria-hidden="true" tabindex="-1"><source src="/assets/film/sky.mp4" type="video/mp4"></video>
+  <div class="wrap grid">
+    <div class="copy">
+      <p class="mono">The part that matters</p>
+      <h2 class="focus-in">Your data only lives in <span class="dim">your own iCloud.</span></h2>
+      <p class="lede">No servers to breach. No account to create. No analytics watching. What you enter stays on your devices and in your own iCloud.</p>
+      <blockquote>“We couldn't read your data even if we wanted to. There is nothing on our side to read it with.”</blockquote>
+      <p><a class="textlink" href="/privacy-first.html">Privacy by architecture</a></p>
+    </div>
+    <div class="glass netlog" aria-live="off">
+      <header><span class="mono">This page, right now</span><span class="mono live"><i></i>Measured live</span></header>
+      <p class="zero tnum" id="nThird">0</p>
+      <p class="what">requests to other companies' servers while you read this.</p>
+      <ul class="rows tnum" id="nRows" aria-label="Files this page has loaded"></ul>
+      <p class="tally mono"><span id="nFiles">0 files</span><span id="nBytes">0 kB</span><span id="nCookies">0 cookies</span></p>
+      <p class="fine" id="nFine">Counted by your browser, not by us. Open DevTools → Network to check.</p>
+    </div>
+  </div>
+</section>
+
+<section class="screens" id="screens"><div class="wrap">
+  <div class="sec-head"><p class="mono">Inside Onori</p><h2 class="focus-in">Honest numbers, <span class="dim">on iPhone and Mac.</span></h2></div>
+  <div class="grid">
+    <div>
+      <div class="tabs" role="tablist" aria-label="Features">
+      <button class="tab" role="tab" id="t0" aria-selected="true" aria-controls="stage"><span class="k">01</span><span class="h">One number for today</span><span class="d"><span>What is left after the bills due before payday, divided over the days that remain. It moves when you spend, and it tells you when it is up from payday.</span></span></button>
+      <button class="tab" role="tab" id="t1" aria-selected="false" aria-controls="stage" tabindex="-1"><span class="k">02</span><span class="h">A plan for every paycheck</span><span class="d"><span>Bills are set aside first, envelopes share the rest, and savings goals get their part. The budget runs from payday to payday, not by the calendar month.</span></span></button>
+      <button class="tab" role="tab" id="t2" aria-selected="false" aria-controls="stage" tabindex="-1"><span class="k">03</span><span class="h">Less to type</span><span class="d"><span>Add a purchase in a few taps, ask Siri, or use a widget. With Plus, Apple Pay purchases save themselves and a scanned receipt is read on your iPhone, never on a server.</span></span></button>
+      <button class="tab" role="tab" id="t3" aria-selected="false" aria-controls="stage" tabindex="-1"><span class="k">04</span><span class="h">The same ledger on Mac</span><span class="d"><span>The number, the calculation behind it, envelopes, bills and daily spending in a native Mac app, next to the same ledger on your iPhone.</span></span></button>
+      </div>
+      <p class="more"><a class="textlink" href="/receipts.html">How receipts and Apple Pay capture work</a></p>
+    </div>
+    <div class="stage" id="stage" role="tabpanel" aria-labelledby="t0">
+      <figure class="shot on"><div class="phone tilt"><picture><source srcset="/assets/img/overview-dark.webp" media="(prefers-color-scheme: dark)"><img src="/assets/img/overview.webp" width="720" height="1564" alt="Overview in Onori: you can spend $78 a day, with $624.96 left after bills and 8 days until payday, and the envelopes below"></picture></div></figure>
+      <figure class="shot"><div class="phone tilt"><picture><source srcset="/assets/img/budget-dark.webp" media="(prefers-color-scheme: dark)"><img src="/assets/img/budget.webp" width="720" height="1564" loading="lazy" alt="Budget in Onori: left to spend, the bills set aside, envelopes and savings goals"></picture></div></figure>
+      <figure class="shot"><div class="phone tilt"><picture><source srcset="/assets/img/transactions-dark.webp" media="(prefers-color-scheme: dark)"><img src="/assets/img/transactions.webp" width="720" height="1564" loading="lazy" alt="Transactions in Onori, grouped by day"></picture></div></figure>
+      <figure class="shot"><div class="macwin tilt"><picture><source srcset="/assets/img/mac-overview-dark.webp" media="(prefers-color-scheme: dark)"><img src="/assets/img/mac-overview.webp" width="1600" height="1118" loading="lazy" alt="Onori on Mac: the number, its calculation, recent transactions and envelopes"></picture></div></figure>
+    </div>
+  </div>
+  <p class="cap" style="margin-top:18px">Real Onori screens from a development build, captured 20 and 21 November 2026. All amounts are synthetic demonstration data.</p>
+</div></section>
+
+<section class="fx" id="currencies"><div class="wrap">
+  <p class="mono">A purchase abroad · sample</p>
+  <p class="big tnum" id="fxBig" aria-live="polite"><span class="sym" id="fxSym">$</span><span id="fxVal">46.15</span></p>
+  <div class="pills" role="group" aria-label="Currency the purchase was paid in">
+    <button class="pill" aria-pressed="true" data-c="EUR">EUR</button>
+    <button class="pill" aria-pressed="false" data-c="GBP">GBP</button>
+    <button class="pill" aria-pressed="false" data-c="AMD">AMD</button>
+    <button class="pill" aria-pressed="false" data-c="JPY">JPY</button>
+    <button class="pill" aria-pressed="false" data-c="CHF">CHF</button>
+  </div>
+  <div class="below">
+    <div style="display:grid;gap:18px">
+      <h2 class="focus-in">Any currency. <span class="dim">One budget.</span></h2>
+      <p class="lede">Pay in euros, yen or dram, and the purchase lands in your envelopes in your main currency, at the rate of its own day. If your bank used another rate, set it yourself.</p>
+      <p><a class="textlink" href="/multi-currency.html">How multi-currency works</a></p>
+    </div>
+    <div class="rate">
+      <p class="mono" id="fxRate">Paid €42.00 · 1 EUR = 1.0989 USD</p>
+      <p class="mono" id="fxDate">Rates snapshot 21 Nov 2026 · onori.money/rates/latest.json</p>
+      <p class="mono">The same daily file the app reads, so two phones in one household convert to identical totals.</p>
+      <p class="mono">USD · EUR · AMD · GBP · JPY · +150 more · part of Onori Plus</p>
+    </div>
+  </div>
+</div></section>
+
+<section class="family" id="family"><div class="wrap grid">
+  <div class="pair" aria-hidden="true">
+    <div class="phone tilt"><picture><source srcset="/assets/img/overview-dark.webp" media="(prefers-color-scheme: dark)"><img src="/assets/img/overview.webp" width="720" height="1564" loading="lazy" alt=""></picture></div>
+    <div class="phone tilt"><picture><source srcset="/assets/img/bills-dark.webp" media="(prefers-color-scheme: dark)"><img src="/assets/img/bills.webp" width="720" height="1564" loading="lazy" alt=""></picture></div>
+  </div>
+  <div class="copy">
+    <p class="mono">Household</p>
+    <h2 class="focus-in">One household. <span class="dim">Two phones.</span></h2>
+    <p class="lede">Share the ledger with your partner through your own iCloud accounts, and share Plus with your family through Apple Family Sharing. No shared passwords, no server in the middle.</p>
+    <ul>
+      <li>One budget and one number for the household</li>
+      <li>Bills and envelopes visible to both of you</li>
+      <li>Each person signs in with their own Apple Account</li>
+    </ul>
+    <p><a class="textlink" href="/family.html">How Family works</a></p>
+    <p class="cap">Inviting is part of Onori Plus. Joining is free.</p>
+  </div>
+</div></section>
+
+<section class="assistant" id="assistant"><div class="wrap grid">
+  <div class="copy">
+    <p class="mono">On Mac · optional</p>
+    <h2 class="focus-in">Ask about <span class="dim">your money.</span></h2>
+    <p class="lede">Connect Claude or ChatGPT on your Mac and ask the assistant you already use about your budget. It can read only what you allow, and it cannot change anything.</p>
+    <ul class="reads">
+      <li><span>Access</span><span>Read-only</span></li>
+      <li><span>Always included</span><span>Amounts, dates, categories</span></li>
+      <li><span>Only if you switch it on</span><span>Merchant names</span></li>
+    </ul>
+    <p><a class="textlink" href="/demo.html">See the full iPhone and Mac demo</a></p>
+    <p class="cap">Assistant Access is a separate one-time purchase on the Mac. Onori has no assistant of its own; what an assistant reads is sent to its AI provider.</p>
+  </div>
+  <div class="chat" id="chat">
+    <header><span class="mono">Claude · connected to Onori</span><button class="ghost" id="replay" type="button">Replay</button></header>
+    <p class="bubble step in" id="q">How much have I spent since payday?</p>
+    <span class="used step in"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5"/></svg>Used Onori</span>
+    <div class="answer">
+      <p class="step in">You've spent <b>$325.04 since payday</b> (Nov 15–20), not counting bills. Five purchases:</p>
+      <table class="tnum">
+        <thead class="step in"><tr><th>Date</th><th>Merchant</th><th>Amount</th></tr></thead>
+        <tbody>
+          <tr class="step in"><td>Nov 16</td><td>SuperMart</td><td>$202.75</td></tr>
+          <tr class="step in"><td>Nov 17</td><td>Streamly</td><td>$12.99</td></tr>
+          <tr class="step in"><td>Nov 18</td><td>Metro Transit</td><td>$32.00</td></tr>
+          <tr class="step in"><td>Nov 20</td><td>Corner Pharmacy</td><td>$57.30</td></tr>
+          <tr class="step in"><td>Nov 20</td><td>POS 0932</td><td>$20.00</td></tr>
+        </tbody>
+      </table>
+      <p class="sum step in tnum">$202.75 + $12.99 + $32.00 + $57.30 + $20.00 = <b>$325.04</b></p>
+    </div>
+    <p class="cap">An illustration with the sample ledger's numbers, not a recording. An assistant words its own answers.</p>
+  </div>
+</div></section>
+
+<section class="pricing" id="pricing"><div class="wrap">
+  <div class="sec-head">
+    <p class="mono">Pricing</p>
+    <h2 class="focus-in">Simple, honest <span class="dim">pricing.</span></h2>
+    <p class="lede">Keeping the budget by hand is free: no account, no card, no countdown. With Plus, Onori does the typing for you.</p>
+  </div>
+  <div class="seg" role="group" aria-label="Billing period"><i id="segThumb"></i><button id="byYear" aria-pressed="true" type="button">Yearly</button><button id="byMonth" aria-pressed="false" type="button">Monthly</button></div>
+  <div class="plans">
+    <div class="plan"><h3>Free</h3><p class="price tnum">$0</p><p>The whole budget, kept by hand.</p><ul><li>The number, envelopes, bills, savings goals</li><li>Widgets, Siri and Shortcuts</li><li>iPhone and Mac, synced through iCloud</li><li>CSV export</li></ul></div>
+    <div class="plan"><h3>Plus</h3><p class="price tnum">$<span class="amt" data-y="39.99" data-m="6.99">39.99</span><small class="per">/ year</small></p><p>Onori does it for you.</p><ul><li>Apple Pay purchases, saved on their own</li><li>Receipts scanned and read</li><li>Bills marked as paid automatically</li><li>Insights and a weekly digest</li><li>Household sharing</li><li>Multi-currency</li></ul><p class="note" data-y="About $3.33 a month · Family Sharing" data-m="Billed monthly · Family Sharing">About $3.33 a month · Family Sharing</p></div>
+    <div class="plan"><h3>Lifetime</h3><p class="price tnum">$79.99<small>once</small></p><p>Everything in Plus, for good. No subscription.</p><p class="note">One payment · Family Sharing</p></div>
+  </div>
+  <div class="promise">
+    <p class="mono">The data promise</p>
+    <p><b>Your data is never held hostage.</b> Cancel Plus and nothing locks: the budget keeps working by hand, and everything you entered stays yours and exportable to CSV. Assistant Access on the Mac is a separate purchase, $29.99 once. Prices in USD; local pricing applies in your country's App Store. Purchases are billed and managed by Apple.</p>
+  </div>
+</div></section>
+
+<section class="closing film" id="get">
+  <video id="lake2" muted playsinline preload="none" poster="/assets/film/lake-mist.jpg" aria-hidden="true" tabindex="-1"><source src="/assets/film/lake.mp4" type="video/mp4"></video>
+  <div class="wrap">
+    <h2>Ready when <span class="dim">you are.</span></h2>
+    <p class="lede">{% if site.app_store_url and site.app_store_url != "" %}Onori is on the App Store.{% else %}Onori is coming to the App Store.{% endif %} Free to keep by hand, no account, no card. And whatever happens, your data stays yours and exportable.</p>
+    <div class="hero-cta">{% include cta.html %}<a class="textlink" href="/pricing.html">Plans and pricing</a></div>
+  </div>
+</section>
+</main>
+{% include footer.html %}
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const usd = n => '$' + n.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const ease = t => 1 - Math.pow(1 - t, 4);
+function tween(from, to, ms, step) {
+  if (reduced || from === to) { step(to); return; }
+  const t0 = performance.now();
+  (function f(now) { const p = clamp((now - t0) / ms, 0, 1); step(from + (to - from) * ease(p)); if (p < 1) requestAnimationFrame(f); })(t0);
+}
+
+/* 1. live number card (figures from the real Overview screen, sample ledger).
+   What is left in the envelopes, divided over the days until payday. */
+const DAYS = 8, ON_PAYDAY = 67;
+const base = [{spent: 202.75, cap: 460}, {spent: 12.99, cap: 170}, {spent: 32, cap: 140}, {spent: 57.30, cap: 80}, {spent: 20, cap: 100}];
+let cats = base.map(c => ({...c})), shownDay = 78;
+function drawBudget() {
+  const left = Math.round(cats.reduce((s, c) => s + c.cap - c.spent, 0) * 100) / 100, day = Math.floor(left / DAYS);
+  cats.forEach((c, i) => {
+    $('a' + (i + 1) + 'l').textContent = usd(c.cap - c.spent) + ' left';
+    $('a' + (i + 1) + 'b').style.width = clamp(c.spent / c.cap * 100, 0, 100).toFixed(1) + '%';
+  });
+  tween(shownDay, day, 600, v => { $('bDay').textContent = '$' + Math.round(v); });
+  shownDay = day;
+  $('bMeta').textContent = usd(left) + ' left after bills · ' + DAYS + ' days until payday';
+  $('bUp').hidden = day <= ON_PAYDAY;
+}
+$('bForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const i = +$('bCat').value, c = cats[i];
+  const v = Math.round(parseFloat($('bAmt').value.replace(',', '.').replace(/[^0-9.]/g, '')) * 100) / 100;
+  if (!(v > 0)) { $('bErr').textContent = 'Enter an amount first.'; $('bAmt').focus(); return; }
+  const room = Math.round((c.cap - c.spent) * 100) / 100;
+  if (v > room) { $('bErr').textContent = 'This sample has ' + usd(room) + ' left there.'; $('bAmt').focus(); return; }
+  c.spent = Math.round((c.spent + v) * 100) / 100; $('bAmt').value = ''; $('bErr').textContent = ''; drawBudget();
+});
+$('bAmt').addEventListener('input', () => { $('bErr').textContent = ''; });
+$('bReset').addEventListener('click', () => { cats = base.map(c => ({...c})); $('bErr').textContent = ''; $('bAmt').value = ''; drawBudget(); });
+
+/* 2. films. With a mouse, scrolling scrubs the mist away (the page still scrolls
+   normally, nothing is pinned). On touch the same film simply plays once. */
+const lake = $('lake'), band = $('heroFilm'), sky = $('sky'), lake2 = $('lake2');
+/* if the browser refuses to play (iOS Low Power Mode), show the
+   clear still instead of a stuck first frame */
+const still = v => { v.removeAttribute('src'); v.replaceChildren(); v.load(); v.poster = '/assets/film/lake-clear.jpg'; };
+const once = (el, fn, threshold) => { const io = new IntersectionObserver(es => { if (es[0].isIntersecting) { io.disconnect(); fn(); } }, {threshold}); io.observe(el); };
+if (reduced) {
+  lake.poster = lake2.poster = '/assets/film/lake-clear.jpg';
+} else {
+  if (matchMedia('(hover:hover) and (pointer:fine)').matches) {
+    let cur = 0, target = 0, raf = 0, inView = false;
+    const wanted = () => { const r = band.getBoundingClientRect(), vh = innerHeight, start = vh * 0.98, end = Math.min(vh * 0.12, (vh - r.height) / 2 + vh * 0.1); return clamp((start - r.top) / (start - end), 0, 1); };
+    const scrub = () => {
+      raf = 0; if (!lake.duration) return;
+      target = wanted() * (lake.duration - 0.06);
+      cur += (target - cur) * 0.14;
+      if (Math.abs(target - cur) < 0.004) cur = target;
+      if (Math.abs(lake.currentTime - cur) > 0.01) lake.currentTime = cur;
+      if (inView && cur !== target) raf = requestAnimationFrame(scrub);
+    };
+    const kick = () => { if (inView && !raf) raf = requestAnimationFrame(scrub); };
+    lake.addEventListener('loadedmetadata', () => { cur = wanted() * (lake.duration - 0.06); lake.currentTime = cur; kick(); });
+    new IntersectionObserver(es => { inView = es[0].isIntersecting; kick(); }).observe(band);
+    addEventListener('scroll', kick, {passive: true}); addEventListener('resize', kick);
+    lake.preload = 'auto'; lake.src = '/assets/film/lake-scrub.mp4';
+  } else {
+    $('filmHint').textContent = 'Watch it clear';
+    lake.src = '/assets/film/lake.mp4';
+    once(band, () => { lake.play().catch(() => still(lake)); }, 0.3);
+  }
+  new IntersectionObserver(es => { es[0].isIntersecting ? sky.play().catch(() => {}) : sky.pause(); }, {rootMargin: '100px'}).observe(sky);
+  once(lake2, () => { lake2.play().catch(() => still(lake2)); }, 0.35);
+}
+
+/* 4. privacy proof: the browser counts what this page really loaded */
+const own = location.origin, seen = new Set(), rows = [];
+let third = 0, files = 0, bytes = 0;
+const kind = e => { const n = e.name.split('?')[0]; return /\.woff2?$/.test(n) ? 'font' : /\.(mp4|webm)$/.test(n) ? 'film' : /\.(webp|jpe?g|png|svg)$/.test(n) ? 'image' : /\.css$/.test(n) ? 'style' : /\.js$/.test(n) ? 'script' : (e.initiatorType || 'file'); };
+const size = b => b <= 0 ? '0 kB' : b >= 1e6 ? (b / 1e6).toFixed(1) + ' MB' : Math.max(1, Math.round(b / 1e3)) + ' kB';
+function addEntry(e) {
+  if (seen.has(e.name)) return; seen.add(e.name);
+  let u; try { u = new URL(e.name); } catch (_) { return; }
+  if (!/^https?:$/.test(u.protocol)) return;
+  const mine = u.origin === own;
+  const b = e.encodedBodySize || e.transferSize || 0;
+  if (mine) { files++; bytes += b; } else third++;
+  rows.unshift({t: kind(e), n: u.pathname.split('/').pop() || u.hostname, s: b ? size(b) : '', o: mine ? 'this site' : u.hostname});
+  drawNet();
+}
+function drawNet() {
+  $('nThird').textContent = third;
+  $('nFiles').textContent = files + (files === 1 ? ' file' : ' files');
+  $('nBytes').textContent = size(bytes) + ' in total';
+  let ck = 0; try { ck = document.cookie ? document.cookie.split(';').length : 0; } catch (_) {}
+  $('nCookies').textContent = ck + (ck === 1 ? ' cookie' : ' cookies');
+  const ul = $('nRows'); ul.textContent = '';
+  rows.slice(0, 5).forEach(r => { const li = document.createElement('li');
+    [['t', r.t], ['n', r.n], ['s', r.s], ['o', r.o]].forEach(([c, v]) => { const s = document.createElement('span'); s.className = c; s.textContent = v; li.appendChild(s); });
+    ul.appendChild(li); });
+}
+try {
+  performance.getEntriesByType('resource').forEach(addEntry);
+  new PerformanceObserver(l => l.getEntries().forEach(addEntry)).observe({type: 'resource', buffered: true});
+} catch (_) {}
+drawNet();
+
+/* 5. feature tabs */
+const tabs = [...document.querySelectorAll('.tab')], shots = [...document.querySelectorAll('.shot')];
+function pick(i, focus) {
+  tabs.forEach((t, k) => { t.setAttribute('aria-selected', k === i); t.tabIndex = k === i ? 0 : -1; });
+  shots.forEach((s, k) => s.classList.toggle('on', k === i));
+  $('stage').setAttribute('aria-labelledby', 't' + i); if (focus) tabs[i].focus();
+}
+tabs.forEach((t, i) => {
+  t.addEventListener('click', () => pick(i));
+  t.addEventListener('keydown', e => { if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); pick((i + 1) % tabs.length, true); }
+    if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); pick((i + tabs.length - 1) % tabs.length, true); } });
+});
+
+/* 6. a purchase abroad, in the main currency (USD in this sample). Live rates
+   from /rates/latest.json, the same daily file the app reads; the numbers
+   below are only the fallback if that request fails. Rates are per 1 EUR. */
+const RATE = {USD: 1.0989, EUR: 1, GBP: 0.83658, AMD: 395.84, JPY: 175.18, CHF: 0.92473};
+const PAID = {EUR: [42, '€', 2], GBP: [35, '£', 2], AMD: [18000, '֏', 0], JPY: [5000, '¥', 0], CHF: [40, 'CHF ', 2]};
+const inUsd = c => PAID[c][0] / RATE[c] * RATE.USD;
+let fxCur = 'EUR', fxShown = inUsd('EUR');
+function showFx(c) {
+  fxCur = c;
+  document.querySelectorAll('.pill').forEach(x => x.setAttribute('aria-pressed', x.dataset.c === c));
+  const [amt, sym, dp] = PAID[c], to = inUsd(c);
+  tween(fxShown, to, 900, v => { $('fxVal').textContent = v.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}); });
+  fxShown = to;
+  $('fxRate').textContent = 'Paid ' + sym + amt.toLocaleString('en-US', {minimumFractionDigits: dp, maximumFractionDigits: dp}) + ' · 1 ' + c + ' = ' + Number((RATE.USD / RATE[c]).toPrecision(5)) + ' USD';
+}
+document.querySelectorAll('.pill').forEach(p => p.addEventListener('click', () => showFx(p.dataset.c)));
+fetch('/rates/latest.json').then(r => r.ok ? r.json() : Promise.reject()).then(d => {
+  if (d.base !== 'EUR') return;
+  Object.keys(RATE).forEach(k => { if (k !== 'EUR' && d.rates[k] > 0) RATE[k] = d.rates[k]; });
+  $('fxDate').textContent = 'Rates snapshot ' + new Date(d.asOf + 'T00:00:00Z').toLocaleDateString('en-GB', {day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC'}) + ' · onori.money/rates/latest.json';
+  showFx(fxCur);
+}).catch(() => {});
+
+/* 7. assistant replay */
+const chat = $('chat'), q = $('q'), qText = q.textContent; let run = 0;
+$('replay').addEventListener('click', () => {
+  const id = ++run, steps = [...chat.querySelectorAll('.step')];
+  if (reduced) return;
+  chat.classList.add('playing'); steps.forEach(s => s.classList.remove('in'));
+  q.classList.add('in'); q.textContent = '';
+  let i = 0;
+  (function type() { if (id !== run) return;
+    if (i < qText.length) { q.textContent = qText.slice(0, ++i); setTimeout(type, 16); return; }
+    steps.slice(1).forEach((s, k) => setTimeout(() => { if (id === run) s.classList.add('in'); if (k === steps.length - 2) setTimeout(() => { if (id === run) chat.classList.remove('playing'); }, 600); }, 420 + k * 210));
+  })();
+});
+
+/* 8. pricing period */
+const yBtn = $('byYear'), mBtn = $('byMonth'), thumb = $('segThumb');
+function period(m) {
+  yBtn.setAttribute('aria-pressed', !m); mBtn.setAttribute('aria-pressed', m);
+  const b = m ? mBtn : yBtn; thumb.style.width = b.offsetWidth + 'px'; thumb.style.transform = 'translateX(' + (b.offsetLeft - 4) + 'px)';
+  document.querySelectorAll('.amt').forEach(a => { const from = parseFloat(a.textContent), to = parseFloat(m ? a.dataset.m : a.dataset.y); tween(from, to, 500, v => { a.textContent = v.toFixed(2); }); });
+  document.querySelectorAll('.per').forEach(p => { p.textContent = m ? '/ month' : '/ year'; });
+  document.querySelectorAll('.note[data-y]').forEach(n => { n.textContent = m ? n.dataset.m : n.dataset.y; });
+}
+yBtn.addEventListener('click', () => period(false)); mBtn.addEventListener('click', () => period(true));
+const placeThumb = () => { const b = mBtn.getAttribute('aria-pressed') === 'true' ? mBtn : yBtn; thumb.style.width = b.offsetWidth + 'px'; thumb.style.transform = 'translateX(' + (b.offsetLeft - 4) + 'px)'; };
+placeThumb(); addEventListener('resize', placeThumb); if (document.fonts && document.fonts.ready) document.fonts.ready.then(placeThumb);
+
+/* 9. devices lean toward the pointer */
+if (!reduced && matchMedia('(hover:hover) and (pointer:fine)').matches) {
+  document.querySelectorAll('.stage, .pair').forEach(area => {
+    area.addEventListener('pointermove', e => { const r = area.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      area.querySelectorAll('.tilt').forEach(d => { d.style.transform = 'rotateY(' + (x * 9).toFixed(2) + 'deg) rotateX(' + (-y * 7).toFixed(2) + 'deg)'; }); });
+    area.addEventListener('pointerleave', () => area.querySelectorAll('.tilt').forEach(d => { d.style.transform = ''; }));
+  });
+}
+})();
+</script>
+</body></html>

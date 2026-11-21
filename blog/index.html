@@ -1,0 +1,15 @@
+---
+layout: page
+title: "Blog"
+description: "Guides and essays on private personal finance: budgeting by paycheck, serverless app architecture, family budgets on iPhone."
+nav: "blog"
+breadcrumb:
+  - name: "Blog"
+---
+
+<p class="crumb"><a href="/">Home</a> → Blog</p>
+<h1>The Onori <em>blog</em></h1>
+<p class="sub">Guides and essays on running your money privately.</p>
+{% for post in site.posts %}
+<div class="card"><h2><a href="{{ post.url }}">{{ post.headline }}</a></h2><p>{{ post.date | date: "%Y-%m-%d" }} · {{ post.read_time }} min — {{ post.summary }}</p></div>
+{% endfor %}
