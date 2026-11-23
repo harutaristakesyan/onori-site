@@ -1,4 +1,5 @@
-# Publishes rates/latest.json — one exchange-rate snapshot per UTC day, which is
+# Publishes rates/latest.json and rates/currencies.json — one exchange-rate
+# snapshot per UTC day and the list of currencies the app offers, which is
 # what makes two members of a Onori household convert their shared ledger to
 # byte-identical totals (HAR-64).
 #
@@ -42,14 +43,14 @@ jobs:
           # --porcelain, not `git diff --quiet`: the latter reports "no change"
           # for a file that does not exist in the index yet, which would skip the
           # very first publish.
-          if [ -z "$(git status --porcelain -- rates/latest.json)" ]; then
+          if [ -z "$(git status --porcelain -- rates/)" ]; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "No change — today's snapshot is already published."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add rates/latest.json
+          git add rates/
           git commit -m "chore(rates): publish snapshot $(date -u +%F)"
           git push
           echo "changed=true" >> "$GITHUB_OUTPUT"

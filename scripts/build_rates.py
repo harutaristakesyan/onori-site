@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Build rates/latest.json , the daily exchange-rate snapshot the Onori app reads.
+"""Build rates/latest.json , the daily exchange-rate snapshot the Onori app reads,
+and rates/currencies.json , the list of currencies the app offers.
 
 Why a published file instead of every device calling the provider itself: two
 members of one household fetching minutes apart used to get slightly different
@@ -16,6 +17,16 @@ lags on weekends and holidays, and the app's staleness window allows for that.
 Rates are read and written as exact decimal text: routing them through a float
 would turn 1.0842 into 1.0842000000000002 and reintroduce the rounding
 differences this file exists to remove.
+
+Only the currencies of countries are published. The provider also lists crypto
+tokens and metals (its `type` field says which); Onori is a household budget, so
+those are left out of both files. The app shows what these two files hold and
+keeps no list of its own.
+
+Shape of rates/currencies.json (decoded by `CurrencyCatalogClient.Row` in the
+app, which reads `iso_code`, `name` and `symbol`):
+
+    [{"iso_code": "AED", "name": "United Arab Emirates Dirham", "symbol": "د.إ"}, ...]
 """
 from __future__ import annotations
 
@@ -27,24 +38,46 @@ import urllib.request
 from datetime import datetime, timedelta, timezone
 
 PROVIDER = "https://api.frankfurter.dev/v2/rates?base=EUR"
+CATALOG = "https://api.frankfurter.dev/v2/currencies"
 USER_AGENT = "onori-rates-publisher (+https://onori.money)"
 BASE = "EUR"
 OUTPUT = pathlib.Path(__file__).resolve().parent.parent / "rates" / "latest.json"
+CURRENCIES_OUTPUT = OUTPUT.parent / "currencies.json"
+# The provider's `type` of a row that is published. "crypto" and "metal" are not.
+PUBLISHED_TYPE = "currency"
 
 # The app stops trusting a snapshot at 72h; failing at 48 means a wedged
 # publisher is a red run before it is ever a user-visible fallback.
 MAX_AGE = timedelta(hours=48)
 
 
-def build() -> dict:
+def fetch(url: str) -> str:
     # A named User-Agent: the provider's edge rejects urllib's default with a 403,
     # and an identifiable one is the courteous thing to send a free API anyway.
-    request = urllib.request.Request(PROVIDER, headers={"User-Agent": USER_AGENT})
+    request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
     with urllib.request.urlopen(request, timeout=30) as response:
         if response.status != 200:
-            sys.exit(f"provider returned HTTP {response.status}")
-        body = response.read().decode("utf-8")
-    rows = json.loads(body, parse_float=decimal.Decimal)
+            sys.exit(f"provider returned HTTP {response.status} for {url}")
+        return response.read().decode("utf-8")
+
+
+def build_currencies() -> list[dict]:
+    """The currencies of countries, by code: what the app offers and nothing else."""
+    rows = json.loads(fetch(CATALOG))
+    currencies = [
+        {"iso_code": row["iso_code"], "name": row["name"], "symbol": row["symbol"]}
+        for row in rows
+        if row.get("type") == PUBLISHED_TYPE
+    ]
+    # A catalog with no `type`, or one that calls everything something else, must not
+    # publish an empty list: the app would then offer no currency at all.
+    if len(currencies) < 100:
+        sys.exit(f"provider catalog has only {len(currencies)} rows of type {PUBLISHED_TYPE!r}")
+    return sorted(currencies, key=lambda row: row["iso_code"])
+
+
+def build(codes: set[str]) -> dict:
+    rows = json.loads(fetch(PROVIDER), parse_float=decimal.Decimal)
     if not rows:
         sys.exit("provider returned no rates")
 
@@ -55,7 +88,11 @@ def build() -> dict:
     # One reference date for the whole table: the provider dates each row
     # separately, and a mixed-date snapshot is not the single fact we publish.
     as_of = max(row["date"] for row in rows)
-    rates = {row["quote"]: row["rate"] for row in rows if row["quote"] != BASE}
+    rates = {
+        row["quote"]: row["rate"]
+        for row in rows
+        if row["quote"] != BASE and row["quote"] in codes
+    }
     return {"base": BASE, "asOf": as_of, "rates": dict(sorted(rates.items()))}
 
 
@@ -84,12 +121,23 @@ def render(snapshot: dict) -> str:
     return "\n".join(lines) + "\n"
 
 
+def write_currencies(currencies: list[dict]) -> None:
+    rendered = json.dumps(currencies, ensure_ascii=False, indent=2) + "\n"
+    if CURRENCIES_OUTPUT.exists() and CURRENCIES_OUTPUT.read_text() == rendered:
+        print(f"unchanged — {len(currencies)} currencies already published")
+        return
+    CURRENCIES_OUTPUT.write_text(rendered)
+    print(f"wrote {CURRENCIES_OUTPUT} — {len(currencies)} currencies")
+
+
 def main() -> None:
-    snapshot = build()
+    currencies = build_currencies()
+    snapshot = build({row["iso_code"] for row in currencies})
     check_freshness(snapshot["asOf"])
 
-    rendered = render(snapshot)
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
+    write_currencies(currencies)
+    rendered = render(snapshot)
     # Idempotent: a second run on the same UTC day writes nothing, so the
     # workflow has nothing to commit and the published bytes stay stable.
     if OUTPUT.exists() and OUTPUT.read_text() == rendered:
